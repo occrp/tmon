@@ -1,6 +1,6 @@
 <?php
-require_once(realpath(__DIR__ . '/..') . '/class/Scraper.class.php');
-require_once(realpath(__DIR__ . '/..') . '/class/ItemHandler.class.php');
+require_once(realpath(__DIR__.'/..').'/class/Scraper.class.php');
+require_once(realpath(__DIR__.'/..').'/class/ItemHandler.class.php');
 
 class Tendergovmd extends ItemHandler{
 
@@ -40,6 +40,8 @@ class Tendergovmd extends ItemHandler{
 			$GLOBALS['total_items_from_page'] = count($dataBlocks, true);
        		$broken = 0;
        	
+       	
+	   		
 			foreach($dataBlocks as $dataBlock) {
             	
              	$GLOBALS['global_counter'] ++;

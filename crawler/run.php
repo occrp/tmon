@@ -6,16 +6,17 @@ set_time_limit(0);
 error_reporting(E_ALL); 
 ini_set("display_errors", 1); 
 
-require_once(realpath(__DIR__) . '/class/Scraper.class.php');
-require_once(realpath(__DIR__) . '/class/ItemHandler.class.php');
-require_once(realpath(__DIR__) . '/class/CliColors.class.php');
-require_once(realpath(__DIR__) . '/class/CliParser.php');
+require_once(realpath(__DIR__).'/class/Scraper.class.php');
+require_once(realpath(__DIR__).'/class/ItemHandler.class.php');
+require_once(realpath(__DIR__).'/class/CliColors.class.php');
+require_once(realpath(__DIR__).'/class/CliParser.php');
 
 pcntl_signal(SIGTERM, "signal_handler");
 pcntl_signal(SIGINT, "signal_handler");
 
 
 	$GLOBALS['allow_debug'] = true;
+	$GLOBALS['crawler_config_file'] = false;
 	$GLOBALS['timestamp'] = time();
 	$GLOBALS['global_counter'] = 0;
     $GLOBALS['global_success_counter'] = 0;
@@ -36,7 +37,8 @@ if(version_compare(PHP_VERSION, "5.3.0", '<')){
 	$source = isset($_GET['source']) ? strtolower(preg_replace('/[^A-Za-z0-9\-]/','', $_GET['source'])) : isset($argv[1]) ? strtolower(preg_replace('/[^A-Za-z0-9\-]/','', $argv[1])) : NULL;
 	$GLOBALS['source_domain'] = isset($_GET['source']) ? $_GET['source'] : isset($argv[1]) ? $argv[1] : NULL;
 	$action = isset($_GET['action']) ? $_GET['action'] : isset($argv[2]) ? $argv[2] : NULL;
-	$GLOBALS['allow_debug'] = isset($_GET['origin']) ? $_GET['origin'] : (isset($argv[3]) && ($argv[3] == 'cron')) ? false : true;
+	$GLOBALS['crawler_config_file'] = isset($_GET['crawler_config_file']) ? $_GET['crawler_config_file'] : isset($argv[3]) ? $argv[3] : $source;
+	$GLOBALS['allow_debug'] = isset($_GET['origin']) ? $_GET['origin'] : (isset($argv[4]) && ($argv[4] == 'cron')) ? false : true;
 	
 	if (!isset($source) || !isset($action) ||($action != "new" && $action != "old" )) 
 		{	
@@ -48,7 +50,7 @@ if(version_compare(PHP_VERSION, "5.3.0", '<')){
 	//determine what index collection to choose
 	$index_src = ($action == "old") ? "old" : "new"; 
 	$GLOBALS['index_src'] = $index_src;
-    $GLOBALS['scraper_conf_path'] = realpath(__DIR__)."/scraper_config/".$source.'.json';
+    $GLOBALS['scraper_conf_path'] = realpath(__DIR__)."/scraper_config/".$GLOBALS['crawler_config_file'].'.json';
 	
 	$current_settings = json_decode(file_get_contents($GLOBALS['scraper_conf_path']));
 	
